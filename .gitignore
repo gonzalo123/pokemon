@@ -1,0 +1,15 @@
+# dependencies
+frontend/node_modules/
+
+# build output
+frontend/dist/
+
+# tooling artifacts
+.claude/
+.playwright-mcp/
+
+# screenshots de desarrollo
+screenshot-*.png
+
+# OS
+.DS_Store
