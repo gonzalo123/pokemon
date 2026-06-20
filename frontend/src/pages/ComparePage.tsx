@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { fetchPokemon, fetchPokemonIndex } from "../api";
+import { fetchPokemon, fetchPokemonIndex, filterSuggestions } from "../api";
 import type { PokemonDetail } from "../types";
 import { TYPE_COLORS } from "../theme";
 import { StatRadarCompare } from "../components/StatRadar";
@@ -40,12 +40,33 @@ function PokemonSlot({
   query: string;
   error: string;
   onQueryChange: (v: string) => void;
-  onLoad: () => void;
+  onLoad: (q?: string) => void;
   loading: boolean;
   index: { id: number; name: string }[];
 }) {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(-1);
+  const suggestions = filterSuggestions(pokemonIndex, query);
   const color = pokemon ? (TYPE_COLORS[pokemon.types[0]] ?? TYPE_COLORS.default) : "#aaa";
+
+  const resolve = (q: string) =>
+    /^\d+$/.test(q) ? q : (filterSuggestions(pokemonIndex, q)[0]?.name ?? q);
+
+  const select = (id: number) => {
+    const name = pokemonIndex.find(p => p.id === id)?.name ?? String(id);
+    onQueryChange(name);
+    setShowDropdown(false);
+    setActiveIdx(-1);
+    onLoad(name);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!showDropdown || suggestions.length === 0) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); setActiveIdx(i => Math.min(i + 1, suggestions.length - 1)); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); setActiveIdx(i => Math.max(i - 1, -1)); }
+    else if (e.key === "Enter" && activeIdx >= 0) { e.preventDefault(); select(suggestions[activeIdx].id); return; }
+    else if (e.key === "Escape") setShowDropdown(false);
+  };
 
   return (
     <div style={{
@@ -58,12 +79,12 @@ function PokemonSlot({
       boxShadow: "var(--shadow)",
     }}>
       <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 4, position: "relative" }}>
-        <div style={{ position: "relative" }}>
+        <div style={{ position: "relative" }} onKeyDown={handleKeyDown}>
           <SearchBar
             value={query}
-            onChange={v => { onQueryChange(v); }}
+            onChange={v => { onQueryChange(v); setActiveIdx(-1); }}
             placeholder="Nombre o id…"
-            onSubmit={onLoad}
+            onSubmit={() => onLoad(resolve(query))}
             onFocus={() => setShowDropdown(true)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
           />
@@ -71,12 +92,12 @@ function PokemonSlot({
             index={pokemonIndex}
             query={query}
             show={showDropdown}
-            activeIdx={-1}
-            onSelect={id => { onQueryChange(String(id)); setShowDropdown(false); onLoad(); }}
+            activeIdx={activeIdx}
+            onSelect={id => select(id)}
           />
         </div>
         <button
-          onClick={onLoad}
+          onClick={() => onLoad(resolve(query))}
           disabled={loading}
           className="btn-accent"
           style={{ background: color }}
@@ -145,14 +166,14 @@ export default function ComparePage() {
         <PokemonSlot
           pokemon={pokemonA} query={queryA} error={errorA}
           onQueryChange={setQueryA}
-          onLoad={() => loadPokemon(queryA, setPokemonA, setLoadingA, setErrorA)}
+          onLoad={(q) => loadPokemon(q ?? queryA, setPokemonA, setLoadingA, setErrorA)}
           loading={loadingA}
           index={pokemonIndex}
         />
         <PokemonSlot
           pokemon={pokemonB} query={queryB} error={errorB}
           onQueryChange={setQueryB}
-          onLoad={() => loadPokemon(queryB, setPokemonB, setLoadingB, setErrorB)}
+          onLoad={(q) => loadPokemon(q ?? queryB, setPokemonB, setLoadingB, setErrorB)}
           loading={loadingB}
           index={pokemonIndex}
         />
