@@ -1,19 +1,26 @@
 # Pokédex
 
-Pokédex interactiva: lista, detalle y comparador de Pokémon.
+Pokédex interactiva: lista, detalle, comparador y **combate animado estilo arcade (FIGHT!)**.
 
 Demo: https://gonzalo123.github.io/pokemon/
 
+## Features
+
+- **Lista** paginada con búsqueda por nombre y filtro por tipo
+- **Detalle** con sprite animado, modo shiny, grito del Pokémon y radar de stats
+- **Comparador** con radar de stats superpuesto y tabla con ganadores por stat
+- **Combate FIGHT!** — intro estilo Street Fighter, barras de HP con damage trail, embestidas, screen-shake, chispas, slash, daño flotante, efectividad de tipos (x2 / x0.5 / inmune) y pantalla de K.O.
+
 ## Stack
 
-React 19 + TypeScript + Vite. Datos: [PokeAPI](https://pokeapi.co) (directamente desde el cliente).
+React 19 + TypeScript + Vite + framer-motion + recharts. Datos: [PokeAPI](https://pokeapi.co) (directamente desde el cliente, sin backend). Desplegada en GitHub Pages vía GitHub Actions.
 
 ## Local
 
 ```bash
 cd frontend
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 ## Human
