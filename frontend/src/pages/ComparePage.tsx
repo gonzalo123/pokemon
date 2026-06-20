@@ -7,6 +7,7 @@ import { StatRadarCompare } from "../components/StatRadar";
 import SearchBar from "../components/SearchBar";
 import TypeBadge from "../components/TypeBadge";
 import SuggestionDropdown from "../components/SuggestionDropdown";
+import BattleArena from "../components/BattleArena";
 
 const STAT_KEYS = ["hp", "attack", "defense", "special-attack", "special-defense", "speed"] as const;
 const STAT_LABELS: Record<string, string> = {
@@ -139,6 +140,7 @@ export default function ComparePage() {
   const [errorA, setErrorA] = useState("");
   const [errorB, setErrorB] = useState("");
   const [pokemonIndex, setPokemonIndex] = useState<{ id: number; name: string }[]>([]);
+  const [battling, setBattling] = useState(false);
 
   useEffect(() => {
     fetchPokemonIndex().then(setPokemonIndex).catch(() => {});
@@ -178,6 +180,18 @@ export default function ComparePage() {
           index={pokemonIndex}
         />
       </div>
+
+      {pokemonA && pokemonB && (
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <button className="btn-fight" onClick={() => setBattling(true)}>
+            ⚔ FIGHT!
+          </button>
+        </div>
+      )}
+
+      {battling && pokemonA && pokemonB && (
+        <BattleArena a={pokemonA} b={pokemonB} onClose={() => setBattling(false)} />
+      )}
 
       {compareData && (
         <>

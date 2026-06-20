@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import ListPage from "./pages/ListPage";
 import DetailPage from "./pages/DetailPage";
 import ComparePage from "./pages/ComparePage";
@@ -28,10 +28,28 @@ function ThemeToggle() {
   );
 }
 
+function Header() {
+  const { pathname } = useLocation();
+  return (
+    <header className="app-header">
+      <Link to="/" className="app-header__brand">Pokédex</Link>
+      <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <Link
+          to="/compare"
+          className={`app-header__nav-link${pathname === "/compare" ? " active" : ""}`}
+        >
+          ⚔ Comparar
+        </Link>
+        <ThemeToggle />
+      </nav>
+    </header>
+  );
+}
+
 export default function App() {
   return (
     <>
-      <ThemeToggle />
+      <Header />
       <Routes>
         <Route path="/" element={<ListPage />} />
         <Route path="/pokemon/:id" element={<DetailPage />} />

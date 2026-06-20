@@ -121,8 +121,8 @@ export default function DetailPage() {
       }}
     >
       <div style={{ maxWidth: 700, margin: "0 auto" }}>
-        <button className="btn-brutal" onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>
-          ← Volver
+        <button className="btn-brutal" onClick={() => navigate("/")} style={{ marginBottom: 16 }}>
+          ← Pokédex
         </button>
 
         {/* sprite with prev/next arrows */}

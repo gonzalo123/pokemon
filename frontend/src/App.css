@@ -213,12 +213,58 @@ body {
   box-shadow: var(--shadow);
 }
 
+/* ─── Global header ────────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 3px solid var(--border);
+  box-shadow: 0 3px 0 var(--border);
+}
+
+.app-header__brand {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.app-header__brand:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+}
+
+.app-header__nav-link {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 3px 3px 0 var(--border);
+  transition: box-shadow 0.1s, transform 0.1s;
+}
+
+.app-header__nav-link:hover {
+  box-shadow: 5px 5px 0 var(--border);
+  transform: translate(-1px, -1px);
+}
+
+.app-header__nav-link.active {
+  background: var(--text);
+  color: var(--surface);
+}
+
 /* ─── Dark mode toggle ─────────────────────────────────────── */
 .theme-toggle {
-  position: fixed;
-  top: 14px;
-  right: 16px;
-  z-index: 100;
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: 50%;
@@ -231,6 +277,7 @@ body {
   font-size: 1.1rem;
   box-shadow: var(--shadow);
   transition: box-shadow 0.1s, transform 0.1s;
+  flex-shrink: 0;
 }
 
 .theme-toggle:hover {
@@ -417,4 +464,295 @@ body {
     transition: none !important;
     transform: none !important;
   }
+}
+
+/* ─── Battle Arena ──────────────────────────────────────────── */
+.battle-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: radial-gradient(ellipse at center, #1a0a2e 0%, #0a0010 70%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 4px solid var(--border);
+}
+
+.battle-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* HUD */
+.battle-hud {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: rgba(0,0,0,0.7);
+  border-bottom: 3px solid #fff;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+/* Escenario */
+.battle-stage {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 60px 60px;
+  background:
+    linear-gradient(to top, #2a1a4a 0%, #150a30 40%, transparent 100%),
+    radial-gradient(ellipse at 50% 110%, #3a2060 0%, transparent 60%);
+  overflow: hidden;
+}
+
+/* suelo brutalista */
+.battle-stage::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: repeating-linear-gradient(
+    90deg,
+    #ffffff18 0px,
+    #ffffff18 2px,
+    transparent 2px,
+    transparent 40px
+  );
+  border-top: 3px solid #ffffff44;
+}
+
+/* Combatientes */
+.battle-fighter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.battle-aura {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: aura-pulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.9; transform: translateX(-50%) scale(1.15); }
+}
+
+.battle-sprite {
+  width: 140px;
+  height: 140px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8));
+}
+
+.battle-sprite--flipped {
+  transform: scaleX(-1);
+}
+
+/* Partículas / chispas */
+.battle-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Número de daño flotante */
+.battle-dmg {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, 4px 4px 0 #000;
+  pointer-events: none;
+  z-index: 30;
+  white-space: nowrap;
+}
+
+.battle-dmg--super {
+  font-size: 2.4rem;
+  color: #ff4444;
+  text-shadow: 2px 2px 0 #000, 4px 4px 0 #880000;
+}
+
+.battle-dmg--immune {
+  font-size: 2rem;
+  color: #999;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Banner de efectividad */
+.battle-eff-banner {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3rem;
+  font-weight: 900;
+  padding: 6px 18px;
+  border: 3px solid #000;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 #000;
+  pointer-events: none;
+  z-index: 35;
+  white-space: nowrap;
+}
+
+.battle-eff-banner--super  { background: #ff4444; color: #fff; }
+.battle-eff-banner--weak   { background: #888;    color: #fff; }
+.battle-eff-banner--immune { background: #333;    color: #ccc; }
+
+/* Shake */
+@keyframes battle-shake {
+  0%,100% { transform: translate(0,0); }
+  20% { transform: translate(-6px, 3px); }
+  40% { transform: translate(6px, -3px); }
+  60% { transform: translate(-4px, 4px); }
+  80% { transform: translate(4px, -2px); }
+}
+
+@keyframes battle-shake-hard {
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  15% { transform: translate(-10px, 5px) rotate(-1deg); }
+  30% { transform: translate(10px, -5px) rotate(1deg); }
+  45% { transform: translate(-8px, 6px) rotate(-0.5deg); }
+  60% { transform: translate(8px, -4px) rotate(0.5deg); }
+  75% { transform: translate(-5px, 3px); }
+}
+
+.shake      { animation: battle-shake      0.35s ease; }
+.shake-hard { animation: battle-shake-hard 0.45s ease; }
+
+/* VS banner */
+.battle-vs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6rem;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 4px 4px 0 #000, 8px 8px 0 #8b6914;
+  z-index: 40;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+/* FIGHT! banner */
+.battle-fight-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 7rem;
+  font-weight: 900;
+  color: #ff6b00;
+  text-shadow: 4px 4px 0 #000, 8px 8px 0 #7a2f00, 0 0 40px #ff6b0088;
+  z-index: 40;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  border: 6px solid #ff6b00;
+  padding: 8px 32px;
+  background: rgba(0,0,0,0.7);
+  box-shadow: 8px 8px 0 #000;
+}
+
+/* KO screen */
+.battle-ko-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.85);
+  z-index: 45;
+  gap: 12px;
+}
+
+.battle-ko-label {
+  font-size: 9rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.battle-ko-sprite {
+  width: 160px;
+  height: 160px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 20px currentColor);
+}
+
+.battle-ko-name {
+  font-size: 2rem;
+  font-weight: 900;
+  text-transform: capitalize;
+  text-shadow: 3px 3px 0 #000;
+  margin: 0;
+}
+
+/* Botón FIGHT */
+.btn-fight {
+  font-size: 1.4rem;
+  font-weight: 900;
+  padding: 14px 40px;
+  background: #ff4444;
+  color: #fff;
+  border: 3px solid #000;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 #000;
+  letter-spacing: 0.05em;
+  transition: transform 0.1s, box-shadow 0.1s;
+  animation: fight-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes fight-pulse {
+  0%,100% { box-shadow: 5px 5px 0 #000; }
+  50% { box-shadow: 5px 5px 0 #000, 0 0 20px #ff444488; }
+}
+
+.btn-fight:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 #000;
+  animation: none;
+}
+
+.btn-fight:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .battle-aura,
+  .battle-flash,
+  .battle-ko-sprite,
+  .btn-fight {
+    animation: none !important;
+    transition: none !important;
+  }
+  .shake, .shake-hard { animation: none !important; }
 }
